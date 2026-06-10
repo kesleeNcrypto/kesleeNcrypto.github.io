@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NcryptoEdge – Security Operations & Threat Detection</title>
+  <meta name="description" content="NcryptoEdge provides security monitoring, custom detection engineering, and incident response solutions for organizations.">
+  <meta name="keywords" content="cybersecurity, SOC, threat detection, incident response, Wazuh, Suricata, SIEM, MSSP, security operations">
+  <meta name="author" content="NcryptoEdge">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="NcryptoEdge – Security Operations & Threat Detection">
+  <meta property="og:description" content="Expert security monitoring and custom threat detection. SOC lab projects and open-source security research.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ncryptoedge.com/">
+  <meta property="og:image" content="https://ncryptoedge.com/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NcryptoEdge – Security Operations & Threat Detection">
+  <meta name="twitter:description" content="Expert security monitoring and custom threat detection. SOC lab projects and open-source security research.">
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "NcryptoEdge",
+    "url": "https://ncryptoedge.com",
+    "logo": "https://ncryptoedge.com/logo.png",
+    "sameAs": [
+      "https://github.com/kesleeNcrypto",
+      "https://www.linkedin.com/in/keslee-ncryptoedge"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+234-907-287-1261",
+      "contactType": "Customer Support",
+      "availableLanguage": "English"
+    },
+    "description": "Cybersecurity initiative focused on Security Operations, Threat Detection, and Incident Response."
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-deep: #0a0c14;
+      --bg-card: #0f111a;
+      --bg-elevated: #13151f;
+      --bg-terminal: #0d0f17;
+      --text-primary: #e0e0e0;
+      --text-secondary: #8892b0;
+      --text-muted: #5a6278;
+      --accent-teal: #0fdc7c;
+      --accent-teal-dim: rgba(15, 220, 124, 0.1);
+      --accent-violet: #8b84ff;
+      --accent-violet-dim: rgba(139, 132, 255, 0.1);
+      --accent-orange: #f26a2f;
+      --accent-orange-dim: rgba(242, 106, 47, 0.1);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-glow: rgba(15, 220, 124, 0.3);
+      --shadow-glow: 0 0 30px rgba(15, 220, 124, 0.08);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', 'Roboto Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--accent-teal-dim); color: var(--accent-teal); }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-teal); border-radius: 4px; }
+
+    /* NAVIGATION */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 2rem;
+      background: rgba(10, 12, 20, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+    }
+    .navbar.scrolled {
+      background: rgba(10, 12, 20, 0.95);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent-teal);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+    .logo::before {
+      content: "▸";
+      color: var(--accent-violet);
+      font-size: 1.2rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-teal);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--accent-teal); }
+    .nav-links a:hover::after { width: 100%; }
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(139, 132, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 50% at 80% 60%, rgba(15, 220, 124, 0.06) 0%, transparent 50%),
+        var(--bg-deep);
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(15, 220, 124, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 220, 124, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 70%);
+    }
+    .hero-content {
+      max-width: 1200px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: var(--accent-teal-dim);
+      border: 1px solid rgba(15, 220, 124, 0.2);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-teal);
+      margin-bottom: 1.5rem;
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: var(--accent-teal);
+      border-radius: 50%;
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(15, 220, 124, 0.2); }
+      50% { box-shadow: 0 0 20px 5px rgba(15, 220, 124, 0.1); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .highlight {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2rem;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-teal), #0bc46a);
+      color: var(--bg-deep);
+      box-shadow: 0 4px 20px rgba(15, 220, 124, 0.2);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(15, 220, 124, 0.3);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent-teal);
+      color: var(--accent-teal);
+      background: var(--accent-teal-dim);
+    }
+
+    /* Terminal */
+    .terminal-wrapper { position: relative; }
+    .terminal {
+      background: var(--bg-terminal);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(15, 220, 124, 0.05);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .terminal-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+    .terminal-title {
+      margin-left: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+    .terminal-body {
+      padding: 1rem;
+      height: 380px;
+      overflow: hidden;
+      position: relative;
+    }
+    .terminal-line {
+      margin-bottom: 0.3rem;
+      opacity: 0;
+      animation: fadeIn 0.3s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .terminal-line .ts { color: var(--text-muted); }
+    .terminal-line .ok { color: var(--accent-teal); }
+    .terminal-line .warn { color: var(--accent-orange); }
+    .terminal-line .err { color: #ff5f56; }
+    .terminal-line .info { color: var(--accent-violet); }
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px; height: 16px;
+      background: var(--accent-teal);
+      animation: cursor-blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .terminal-scanline {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, rgba(15, 220, 124, 0.1), transparent);
+      animation: scan 4s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes scan {
+      0% { top: 0; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 6rem 2rem;
+      position: relative;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-teal);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* VALUE PROPS */
+    .value-props {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .props-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .prop-card {
+      padding: 2.5rem 2rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .prop-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-violet));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .prop-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-glow);
+      box-shadow: var(--shadow-glow);
+    }
+    .prop-card:hover::before { opacity: 1; }
+    .prop-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .prop-card:nth-child(1) .prop-icon { background: var(--accent-teal-dim); }
+    .prop-card:nth-child(2) .prop-icon { background: var(--accent-violet-dim); }
+    .prop-card:nth-child(3) .prop-icon { background: var(--accent-orange-dim); }
+    .prop-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+    .prop-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* ABOUT */
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .about-text h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+    .about-text p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .stat {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+    .stat-number {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-teal);
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .about-visual { position: relative; }
+    .about-visual::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-violet));
+      border-radius: 24px;
+      filter: blur(40px);
+      opacity: 0.5;
+    }
+    .about-visual-inner {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 2rem;
+      overflow: hidden;
+    }
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .tech-tag {
+      padding: 0.5rem 1rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+    .tech-tag:hover {
+      border-color: var(--accent-teal);
+      color: var(--accent-teal);
+      background: var(--accent-teal-dim);
+    }
+
+    /* DETECTIONS */
+    .detections {
+      background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-card) 100%);
+    }
+    .detections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+    .detection-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .detection-card::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 100px; height: 100px;
+      background: radial-gradient(circle, var(--accent-teal-dim) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .detection-card:hover {
+      border-color: var(--accent-teal);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    .detection-card:hover::after { opacity: 1; }
+    .detection-id {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-teal);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .detection-id::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent-teal);
+      border-radius: 50%;
+    }
+    .detection-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+    .detection-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .detection-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .meta-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+    }
+    .meta-tag.wazuh { color: var(--accent-teal); border-color: rgba(15, 220, 124, 0.2); }
+    .meta-tag.suricata { color: var(--accent-violet); border-color: rgba(139, 132, 255, 0.2); }
+    .meta-tag.cloud { color: var(--accent-orange); border-color: rgba(242, 106, 47, 0.2); }
+    .detection-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 1.25rem;
+      color: var(--accent-teal);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: gap 0.2s;
+    }
+    .detection-link:hover { gap: 0.7rem; }
+
+    /* SERVICES */
+    .services { background: var(--bg-card); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 2.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .service-card:hover {
+      border-color: var(--accent-violet);
+      background: var(--bg-elevated);
+    }
+    .service-card.coming-soon::after {
+      content: 'COMING SOON';
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.25rem 0.6rem;
+      background: var(--accent-orange-dim);
+      color: var(--accent-orange);
+      border-radius: 4px;
+      border: 1px solid rgba(242, 106, 47, 0.2);
+    }
+    .service-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      background: var(--accent-violet-dim);
+    }
+    .service-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+    .service-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* FOUNDER */
+    .founder {
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-deep) 100%);
+    }
+    .founder-content {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .founder-avatar { position: relative; }
+    .founder-avatar::before {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-violet));
+      border-radius: 24px;
+      filter: blur(20px);
+      opacity: 0.4;
+    }
+    .founder-avatar-inner {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--bg-elevated);
+      border-radius: 20px;
+      border: 2px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      overflow: hidden;
+    }
+    .founder-info h3 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    .founder-role {
+      font-family: var(--font-mono);
+      color: var(--accent-teal);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    .founder-bio {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+    .founder-links {
+      display: flex;
+      gap: 1rem;
+    }
+    .founder-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .founder-link:hover {
+      border-color: var(--accent-teal);
+      color: var(--accent-teal);
+    }
+
+    /* BLOG */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .blog-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .blog-card:hover {
+      border-color: var(--accent-teal);
+      transform: translateY(-4px);
+    }
+    .blog-image {
+      height: 160px;
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .blog-content { padding: 1.5rem; }
+    .blog-date {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .blog-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .blog-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .blog-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 1rem;
+      color: var(--accent-teal);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* CONTACT */
+    .contact { background: var(--bg-card); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+    .contact-info h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .contact-info > p {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-size: 1.05rem;
+    }
+    .contact-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .contact-method {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      transition: all 0.2s;
+    }
+    .contact-method:hover { border-color: var(--accent-teal); }
+    .contact-method-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--accent-teal-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .contact-method-info strong {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 0.15rem;
+    }
+    .contact-method-info span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .contact-form {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 2.5rem;
+    }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 3px var(--accent-teal-dim);
+    }
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .form-submit {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--accent-teal), #0bc46a);
+      color: var(--bg-deep);
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .form-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(15, 220, 124, 0.3);
+    }
+
+    /* FOOTER */
+    .footer {
+      background: var(--bg-deep);
+      border-top: 1px solid var(--border-subtle);
+      padding: 4rem 2rem 2rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand .logo {
+      margin-bottom: 1rem;
+      display: inline-flex;
+    }
+    .footer-brand p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      max-width: 300px;
+    }
+    .footer-col h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      color: var(--text-primary);
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.75rem; }
+    .footer-col a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--accent-teal); }
+    .footer-bottom {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-bottom p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+    .footer-social a {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .footer-social a:hover {
+      border-color: var(--accent-teal);
+      color: var(--accent-teal);
+      background: var(--accent-teal-dim);
+    }
+
+    /* ANIMATIONS */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .hero-content { grid-template-columns: 1fr; text-align: center; }
+      .hero-subtitle { margin: 0 auto 2.5rem; }
+      .hero-ctas { justify-content: center; }
+      .about-content { grid-template-columns: 1fr; }
+      .founder-content { grid-template-columns: 1fr; text-align: center; }
+      .founder-avatar { max-width: 250px; margin: 0 auto; }
+      .founder-links { justify-content: center; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: block; }
+      .props-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .detections-grid { grid-template-columns: 1fr; }
+      .about-stats { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; text-align: center; }
+      .footer-brand p { margin: 0 auto; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      section { padding: 4rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">NcryptoEdge</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#detections">Detections</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#founder">Founder</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">SOC Operations Active</div>
+        <h1>
+          Security Operations<br>
+          <span class="highlight">& Threat Detection</span>
+        </h1>
+        <p class="hero-subtitle">
+          Gain real-time visibility into cyber threats and automate incident response 
+          with open-source SIEM, IDS, and custom detection engineering.
+        </p>
+        <div class="hero-ctas">
+          <a href="#detections" class="btn btn-primary">Explore Detections →</a>
+          <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+        </div>
+      </div>
+      <div class="terminal-wrapper">
+        <div class="terminal">
+          <div class="terminal-header">
+            <span class="terminal-dot dot-red"></span>
+            <span class="terminal-dot dot-yellow"></span>
+            <span class="terminal-dot dot-green"></span>
+            <span class="terminal-title">ncryptoedge-soc — wazuh-manager</span>
+          </div>
+          <div class="terminal-body" id="terminal-body">
+            <div class="terminal-scanline"></div>
+            <div id="terminal-content"></div>
+            <span class="terminal-cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="value-props">
+    <div class="container">
+      <div class="props-grid">
+        <div class="prop-card fade-in">
+          <div class="prop-icon">🛡️</div>
+          <h3>24/7 Monitoring</h3>
+          <p>Continuous log collection and real-time alerting across your infrastructure. Never miss a critical security event.</p>
+        </div>
+        <div class="prop-card fade-in">
+          <div class="prop-icon">🔍</div>
+          <h3>Custom Detections</h3>
+          <p>Engineered threat rules and analytics tailored to your environment. From brute-force to cloud compromise.</p>
+        </div>
+        <div class="prop-card fade-in">
+          <div class="prop-icon">⚡</div>
+          <h3>Open-Source SIEM</h3>
+          <p>Deploy and manage Wazuh, Suricata, and OpenSearch stacks without vendor lock-in or hidden costs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-text fade-in">
+          <span class="section-label">// About Us</span>
+          <h2>Building Defenses,<br>One Detection at a Time</h2>
+          <p>
+            NcryptoEdge is a cybersecurity initiative focused on Security Operations, Threat Detection, 
+            and Incident Response. We help organizations strengthen their defenses by building practical 
+            SOC labs, engineering custom detections, and performing threat investigations.
+          </p>
+          <p>
+            Our mission is to improve visibility and accelerate response to attacks. We deploy SIEM systems 
+            (Wazuh/OpenSearch), integrate IDS (Suricata) alerts, and enforce security best practices 
+            through hands-on research and open-source tooling.
+          </p>
+          <div class="about-stats">
+            <div class="stat">
+              <span class="stat-number">5+</span>
+              <span class="stat-label">Custom Detections</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">3</span>
+              <span class="stat-label">SOC Lab Builds</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">Open Source</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual fade-in">
+          <div class="about-visual-inner">
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem; color: var(--text-secondary);">Tech Stack</h3>
+            <div class="tech-stack">
+              <span class="tech-tag">Wazuh</span>
+              <span class="tech-tag">Suricata</span>
+              <span class="tech-tag">OpenSearch</span>
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">Sigma</span>
+              <span class="tech-tag">YARA</span>
+              <span class="tech-tag">Docker</span>
+              <span class="tech-tag">AWS</span>
+              <span class="tech-tag">Linux</span>
+              <span class="tech-tag">GitHub Actions</span>
+              <span class="tech-tag">Slack API</span>
+              <span class="tech-tag">CloudTrail</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detections" id="detections">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">// Detection Library</span>
+        <h2 class="section-title">Threat Detections</h2>
+        <p class="section-desc">Custom-engineered detection rules for real-world attack scenarios. Each detection is documented, tested, and open-sourced.</p>
+      </div>
+      <div class="detections-grid">
+        <div class="detection-card fade-in">
+          <div class="detection-id">D-001</div>
+          <h3>SSH Brute-Force Detection</h3>
+          <p>Alerts on repeated SSH login failures from the same source IP, identifying credential-guessing attacks against your infrastructure.</p>
+          <div class="detection-meta">
+            <span class="meta-tag wazuh">Wazuh</span>
+            <span class="meta-tag">Linux</span>
+          </div>
+          <a href="https://github.com/kesleeNcrypto/detections/tree/main/D-001" class="detection-link" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+        <div class="detection-card fade-in">
+          <div class="detection-id">D-002</div>
+          <h3>Port Scan Activity</h3>
+          <p>Detects Nmap and stealth port scans via Suricata IDS logs. Identifies reconnaissance behavior before exploitation begins.</p>
+          <div class="detection-meta">
+            <span class="meta-tag suricata">Suricata</span>
+            <span class="meta-tag">IDS</span>
+          </div>
+          <a href="https://github.com/kesleeNcrypto/detections/tree/main/D-002" class="detection-link" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+        <div class="detection-card fade-in">
+          <div class="detection-id">D-003</div>
+          <h3>Suspicious PowerShell</h3>
+          <p>Flags obfuscated and encoded PowerShell commands using Wazuh agent events. Catches living-off-the-land techniques.</p>
+          <div class="detection-meta">
+            <span class="meta-tag wazuh">Wazuh</span>
+            <span class="meta-tag">Windows</span>
+          </div>
+          <a href="https://github.com/kesleeNcrypto/detections/tree/main/D-003" class="detection-link" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+        <div class="detection-card fade-in">
+          <div class="detection-id">D-004</div>
+          <h3>Malware Download Detection</h3>
+          <p>Triggers on indicators of malicious executable downloads via honeypot feeds and hash reputation checks.</p>
+          <div class="detection-meta">
+            <span class="meta-tag wazuh">Wazuh</span>
+            <span class="meta-tag">Threat Intel</span>
+          </div>
+          <a href="https://github.com/kesleeNcrypto/detections/tree/main/D-004" class="detection-link" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+        <div class="detection-card fade-in">
+          <div class="detection-id">D-005</div>
+          <h3>AWS Login Anomaly</h3>
+          <p>Monitors unusual AWS CloudTrail login patterns for potential account compromise and unauthorized access.</p>
+          <div class="detection-meta">
+            <span class="meta-tag cloud">CloudTrail</span>
+            <span class="meta-tag">AWS</span>
+          </div>
+          <a href="https://github.com/kesleeNcrypto/detections/tree/main/D-005" class="detection-link" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+        <div class="detection-card fade-in" style="display: flex; align-items: center; justify-content: center; text-align: center; min-height: 280px;">
+          <div>
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📦</div>
+            <h3 style="margin-bottom: 0.75rem;">View All Detections</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Explore the full detection library on GitHub</p>
+            <a href="https://github.com/kesleeNcrypto/detections" class="btn btn-secondary" target="_blank" rel="noopener" style="font-size: 0.85rem; padding: 0.7rem 1.5rem;">Open Repository →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">// Services</span>
+        <h2 class="section-title">MSSP-Style Offerings</h2>
+        <p class="section-desc">Enterprise-grade security services built on open-source foundations. Coming soon as NcryptoEdge scales.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card fade-in">
+          <div class="service-icon">📡</div>
+          <h3>24/7 Security Monitoring</h3>
+          <p>Continuous log collection, real-time alerting, and SOC dashboard management. We watch your perimeter so you do not have to.</p>
+        </div>
+        <div class="service-card fade-in coming-soon">
+          <div class="service-icon">🚨</div>
+          <h3>Incident Response</h3>
+          <p>Rapid analysis, containment, and remediation of detected threats. From alert to action in minutes, not hours.</p>
+        </div>
+        <div class="service-card fade-in coming-soon">
+          <div class="service-icon">🎯</div>
+          <h3>Threat Hunting</h3>
+          <p>Proactive adversary detection across your environment. We search for what automated rules might miss.</p>
+        </div>
+        <div class="service-card fade-in coming-soon">
+          <div class="service-icon">🔐</div>
+          <h3>Security Assessments</h3>
+          <p>Identification of configuration flaws, exposure gaps, and compliance deviations before attackers find them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="founder" id="founder">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">// Team</span>
+        <h2 class="section-title">Meet the Founder</h2>
+      </div>
+      <div class="founder-content fade-in">
+        <div class="founder-avatar">
+          <div class="founder-avatar-inner">👤</div>
+        </div>
+        <div class="founder-info">
+          <h3>Keslee Ncrypto</h3>
+          <div class="founder-role">Founder & Lead Detection Engineer</div>
+          <p class="founder-bio">
+            A cybersecurity professional specializing in detection engineering and SOC operations. 
+            With hands-on experience deploying enterprise SIEM/IDS stacks and conducting threat hunts, 
+            Keslee builds practical lab environments to tackle real-world attacks.
+          </p>
+          <p class="founder-bio">
+            Passionate about open-source security, sharing research and tools publicly through GitHub 
+            and the NcryptoEdge Medium blog. Dedicated to helping organizations defend against evolving 
+            threats through automation, visibility, and engineering excellence.
+          </p>
+          <div class="founder-links">
+            <a href="https://github.com/kesleeNcrypto" class="founder-link" target="_blank" rel="noopener">
+              <span>🔗</span> GitHub
+            </a>
+            <a href="https://medium.com/@ncryptoedge" class="founder-link" target="_blank" rel="noopener">
+              <span>✍️</span> Medium
+            </a>
+            <a href="https://linkedin.com/in/keslee-ncryptoedge" class="founder-link" target="_blank" rel="noopener">
+              <span>💼</span> LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blog" id="blog">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">// Resources</span>
+        <h2 class="section-title">Latest from the Blog</h2>
+        <p class="section-desc">Security research, lab buildouts, and detection engineering write-ups published on Medium.</p>
+      </div>
+      <div class="blog-grid">
+        <article class="blog-card fade-in">
+          <div class="blog-image">🖥️</div>
+          <div class="blog-content">
+            <div class="blog-date">June 2026</div>
+            <h3>Building a Practical Wazuh Home SOC Lab</h3>
+            <p>Step-by-step guide to deploying Wazuh, OpenSearch, and Suricata for a fully functional security operations center.</p>
+            <a href="https://medium.com/@ncryptoedge/building-wazuh-soc-lab" class="blog-link" target="_blank" rel="noopener">Read on Medium →</a>
+          </div>
+        </article>
+        <article class="blog-card fade-in">
+          <div class="blog-image">🌐</div>
+          <div class="blog-content">
+            <div class="blog-date">July 2026</div>
+            <h3>Hands-on with Suricata IDS and Wazuh Alerts</h3>
+            <p>Integrating network intrusion detection with SIEM correlation rules for real-time threat visibility.</p>
+            <a href="https://medium.com/@ncryptoedge/suricata-wazuh-integration" class="blog-link" target="_blank" rel="noopener">Read on Medium →</a>
+          </div>
+        </article>
+        <article class="blog-card fade-in">
+          <div class="blog-image">☁️</div>
+          <div class="blog-content">
+            <div class="blog-date">August 2026</div>
+            <h3>Integrating Cloud Security Monitoring</h3>
+            <p>Connecting AWS CloudTrail, GuardDuty, and open-source tooling for unified cloud threat detection.</p>
+            <a href="https://medium.com/@ncryptoedge/cloud-security-monitoring" class="blog-link" target="_blank" rel="noopener">Read on Medium →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">// Contact</span>
+        <h2 class="section-title">Let's Secure Your Edge</h2>
+        <p class="section-desc">Ready to strengthen your security posture? Reach out for collaborations, consulting, or just to talk shop.</p>
+      </div>
+      <div class="contact-grid fade-in">
+        <div class="contact-info">
+          <h3>Get in Touch</h3>
+          <p>Whether you need detection engineering support, SOC lab guidance, or want to collaborate on security research, we are here to help.</p>
+          <div class="contact-methods">
+            <div class="contact-method">
+              <div class="contact-method-icon">📧</div>
+              <div class="contact-method-info">
+                <strong>Email</strong>
+                <span>hello@ncryptoedge.com</span>
+              </div>
+            </div>
+            <div class="contact-method">
+              <div class="contact-method-icon">📱</div>
+              <div class="contact-method-info">
+                <strong>Phone</strong>
+                <span>+234 907 287 1261</span>
+              </div>
+            </div>
+            <div class="contact-method">
+              <div class="contact-method-icon">🐙</div>
+              <div class="contact-method-info">
+                <strong>GitHub</strong>
+                <span>github.com/kesleeNcrypto</span>
+              </div>
+            </div>
+            <div class="contact-method">
+              <div class="contact-method-icon">💼</div>
+              <div class="contact-method-info">
+                <strong>LinkedIn</strong>
+                <span>linkedin.com/in/keslee-ncryptoedge</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-form">
+          <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" id="contact-form">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="you@company.com" required>
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <input type="text" id="subject" name="subject" placeholder="How can we help?">
+            </div>
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" placeholder="Tell us about your security needs..." required></textarea>
+            </div>
+            <button type="submit" class="form-submit">Send Message →</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo">NcryptoEdge</a>
+          <p>Security Operations, Threat Detection, and Incident Response. Built on open-source foundations for the modern defender.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#detections">Detections</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="https://github.com/kesleeNcrypto/detections" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://medium.com/@ncryptoedge" target="_blank" rel="noopener">Medium Blog</a></li>
+            <li><a href="#blog">Articles</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 NcryptoEdge. All rights reserved. Built with 💚 for the security community.</p>
+        <div class="footer-social">
+          <a href="https://github.com/kesleeNcrypto" target="_blank" rel="noopener" aria-label="GitHub">🐙</a>
+          <a href="https://linkedin.com/in/keslee-ncryptoedge" target="_blank" rel="noopener" aria-label="LinkedIn">💼</a>
+          <a href="https://medium.com/@ncryptoedge" target="_blank" rel="noopener" aria-label="Medium">✍️</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Terminal Simulation
+    const terminalLines = [
+      { text: "Wazuh -- Agent 003 (web-server) connected", type: "ok", delay: 800 },
+      { text: "D-001 | SSH brute-force detected from 192.168.1.45", type: "warn", delay: 1200 },
+      { text: "Suricata -- ET SCAN Nmap Scripting Engine Detected", type: "info", delay: 1800 },
+      { text: "D-002 | Port scan activity on ports 22,80,443,3306", type: "warn", delay: 2400 },
+      { text: "Wazuh -- Syslog collector started on 0.0.0.0:514", type: "ok", delay: 3000 },
+      { text: "D-003 | Suspicious PowerShell -encodedcommand detected", type: "err", delay: 3800 },
+      { text: "AWS CloudTrail -- Login from new IP: 203.0.113.42", type: "info", delay: 4500 },
+      { text: "D-005 | AWS Console login anomaly - unusual time/location", type: "warn", delay: 5200 },
+      { text: "OpenSearch -- Index wazuh-alerts-2026.06.10 created", type: "ok", delay: 6000 },
+      { text: "D-004 | Malware hash match: e3b0c44298fc1c149afbf4c8996fb924", type: "err", delay: 6800 }
+    ];
+
+    let lineIndex = 0;
+    const terminalContent = document.getElementById('terminal-content');
+
+    function addTerminalLine() {
+      if (lineIndex >= terminalLines.length) {
+        lineIndex = 0;
+        terminalContent.innerHTML = '';
+      }
+      const line = terminalLines[lineIndex];
+      const div = document.createElement('div');
+      div.className = 'terminal-line';
+      div.style.animationDelay = '0s';
+      const ts = new Date().toISOString().split('T')[1].split('.')[0];
+      div.innerHTML = '<span class="ts">[' + ts + ']</span> <span class="' + line.type + '">' + line.text + '</span>';
+      terminalContent.appendChild(div);
+      while (terminalContent.children.length > 8) {
+        terminalContent.removeChild(terminalContent.firstChild);
+      }
+      lineIndex++;
+      setTimeout(addTerminalLine, line.delay || 1500);
+    }
+    setTimeout(addTerminalLine, 1000);
+
+    // Scroll animations
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
